@@ -1,0 +1,19 @@
+body {
+    height: 100vh;
+    /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("https://images.unsplash.com/photo-1631563640522-36673f752f1f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1033&q=80"); */
+    background-size: cover;
+    background-position: center;
+    text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.5);
+    color: rgba(163, 151, 151, 0.5);
+}
+
+form,card {
+    opacity: 0.7;
+}
+
+#map {
+    width: 100%;
+    height: 300px;
+}

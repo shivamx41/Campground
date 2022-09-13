@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='star.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='show.css') }}">
+    
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+
+        
+   
+</head>
+<body>
+    
+    
+    {%include "navbar1.html"%}
+<div class="mt-5 ms-5">
+    <div class="row ">
+        <div class="col-6">
+            {%for campgroundview in campgroundview %}
+            <style>
+                body{
+                background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url("{{url_for('static',filename = 'uploads/'+ campgroundview.image)}}");
+                }
+            </style>
+            <img src="{{url_for('static',filename = 'uploads/'+ campgroundview.image)}}" height="300" width="300" class="card-img-top" alt="...">
+           
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{campgroundview.title}}</h5>
+                    <p class="card-text">{{campgroundview.description}}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-muted">{{campgroundview.location}}</li>
+                    <!-- <li class="list-group-item">Submitted by campground.author.username}}</li> -->
+                    <li class="list-group-item">${{campgroundview.price}}/Per day</li>
+                    <li class="list-group-item">{{campgroundview.mobile}}</li>
+                    <li class="list-group-item">{{campgroundview.email}}</li>
+                </ul>
+              
+                <div class="card-body">
+                    <a class="card-link btn btn-info" href="/campgrounds/{{campgroundview.id}}/edit">Edit</a>
+                    <a class="card-link btn btn-danger" href="/campgrounds/{{campgroundview.id}}/delete">Delete</a>
+                   
+                </div>
+               
+                <div class="card-footer text-muted">
+                    2 days ago
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="col-6">
+            <div id='map' ></div>
+                  
+<!-- <div id='map' style='width: 400px; height: 300px;'></div> -->
+
+
+    
+           if(currentUser)
+            <h2>Leave a Review</h2>
+            <div class="me-5">
+                <form action="/campgrounds/{{campgroundview.id}}/reviews" method="POST" class="mb-3 validated-form" novalidate>
+             
+                    <fieldset class="starability-basic">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked
+                            aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+                    <div class="mb-3">
+                        <label class="form-label" for="body">Review Text</label>
+                        <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <button class="btn btn-success">Submit</button>
+                </form>
+            </div>
+            <div class="mt-5 me-5">
+            <div class="card mb-3 ">
+                <div class="card-body">
+                    <h5 class="card-title"> <%= review.author.username%></h5>
+                    <p class="starability-result" data-rating="<%=review.rating%>">
+                        Rated: <%= review.rating %> stars
+                    </p>
+                   
+                    <p class="card-text">Review:  review.body</p>
+                    if( currentUser && review.author.equals(currentUser._id))  
+                    <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                  
+                </div>
+            </div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+{%include "footer.html"%}
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<!-- <script src="{{ url_for('static', filename='showpagemap.js') }}"></script> -->
+</body>
+</html>
+
+<script>
+    var coordinates = '{{geo.features[0].geometry.coordinates}}';
+    console.log(typeof coordinates);
+    
+    cd = coordinates.replace(/\[|\]/g,'').split(',')
+    var coordinate = []  
+    for(i = 0; i < cd.length; i++) {
+        temp = cd[i].replace(/&#39;/g, "").split(',')
+    //   result = x.map(s => s.slice(0,4));
+        console.log(temp)
+        coordinate.push(parseFloat(temp));
+    }
+    console.log(typeof coordinate);
+    console.log(coordinate);
+
+	// TO MAKE THE MAP APPEAR YOU MUST
+	// ADD YOUR ACCESS TOKEN FROM
+	// https://account.mapbox.com
+	mapboxgl.accessToken = 'pk.eyJ1Ijoic2l2YXNhdGhpdmVsIiwiYSI6ImNsN2VteWlmcTAxeWkzdm1qcWc3OHV2YzUifQ.dm2a4GX3Z_Q73bJL_K-o1g';
+const map = new mapboxgl.Map({
+container: 'map',
+// Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+style: 'mapbox://styles/mapbox/streets-v11',
+center: coordinate,
+zoom: 8
+});
+map.addControl(new mapboxgl.NavigationControl());
+// Create a default Marker and add it to the map.
+const marker1 = new mapboxgl.Marker()
+.setLngLat(coordinate)
+.addTo(map);
+ 
+</script>
